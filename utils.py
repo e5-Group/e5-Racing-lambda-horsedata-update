@@ -9,7 +9,6 @@ def format_date(date):
     return formatted_date
     
 def date_from_string(input):
-    eastern = timezone('US/Eastern')
     if('-' not in input):
         temp_string = input[:4] + '-' + input[4:6] + '-' + input[6:]
     else:
@@ -34,10 +33,9 @@ def get_min_date():
     min_date = date.today() - timedelta(days=7)
     return min_date
 
-def build_entry(entry):
+def build_entry(entry, brand):
     item = {
-        #'brand': 'e5',
-        'Brand': os.environ['brand'],
+        'Brand': brand,
         'unique_id': entry['uniqueId'],
         #'horse_name': entry['horseName'],
         'Horse_Name': entry['horseName'],
@@ -65,10 +63,9 @@ def build_entry(entry):
         
     return item
     
-def build_result(result):
+def build_result(result, brand):
     item = {
-            #'brand': 'e5',
-            'Brand': os.environ['brand'],
+            'Brand': brand,
             'unique_id': result["uniqueId"],
             #'horse_name': result["horseName"],
             'Horse_Name': result["horseName"],
@@ -95,15 +92,14 @@ def build_result(result):
     
     return item
     
-def build_workout(workout):
+def build_workout(workout, brand):
     if workout['horseName'] == '': 
         horse_name = 'Unnamed Horse'  
     else:
         horse_name = workout['horseName']
 
     item = {
-            #'brand': 'e5',
-            'Brand': os.environ['brand'],
+            'Brand': brand,
             'unique_id': workout['uniqueId'],
             #'horse_name': workout['horseName'],
             'Horse_Name': horse_name,
