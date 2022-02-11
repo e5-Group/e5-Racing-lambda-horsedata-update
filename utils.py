@@ -20,10 +20,16 @@ def date_from_string(input):
     
 def datetime_from_string(input, input1):
     eastern = timezone('US/Eastern')
+    ampm = ''
+    if(input1.split(':')[0] in ('10', '11')): 
+        ampm = ' AM' 
+    else: 
+        ampm = ' PM'
+
     if('-' not in input):
-        temp_string = input[:4] + '-' + input[4:6] + '-' + input[6:] + ' ' + input1 + ' PM'
+        temp_string = input[:4] + '-' + input[4:6] + '-' + input[6:] + ' ' + input1 + ampm
     else:
-        temp_string = input + ' ' + input1 + ' PM'
+        temp_string = input + ' ' + input1 + ampm
         
     temp_datetime_notz = parser.parse(temp_string)
     temp_datetime = eastern.localize(temp_datetime_notz)

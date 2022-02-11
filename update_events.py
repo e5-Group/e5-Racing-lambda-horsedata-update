@@ -9,21 +9,21 @@ import pytz
 from utils import build_entry, build_result, build_workout, get_min_date, date_from_string, datetime_from_string
 
 def lambda_handler(event, context):
-    client = boto3.resource('dynamodb')
+    #client = boto3.resource('dynamodb')
 
-    #client = boto3.resource(
-    #'dynamodb', 
-    #aws_access_key_id = 'AKIAIAPYES55LNB4XHWQ',
-    #aws_secret_access_key = '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',
-    #region_name= 'us-east-1')
+    client = boto3.resource(
+    'dynamodb', 
+    aws_access_key_id = 'AKIAIAPYES55LNB4XHWQ',
+    aws_secret_access_key = '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',
+    region_name= 'us-east-1')
 
     horses_table = client.Table('horses')
 
 
     todays_datetime = datetime.now(tz=pytz.timezone('US/Eastern'))
 
-    base_path = os.environ['base_path']
-    #base_path = 'https://data.tjcis.com/api/portfolio'
+    #base_path = os.environ['base_path']
+    base_path = 'https://data.tjcis.com/api/portfolio'
     
     portfolios = get_portfolios(client)
 
@@ -37,7 +37,7 @@ def lambda_handler(event, context):
             resutls_table = client.Table('results')
             entries_table = client.Table('entries')
             workouts_table = client.Table('workouts')
-        elif brand == 'MC':
+        elif brand == 'mc':
             resutls_table = client.Table('results_mc')
             entries_table = client.Table('entries_mc')
             workouts_table = client.Table('workouts_mc')
@@ -83,7 +83,7 @@ def process_results(brand, user_id, password, base_path, unique_id, todays_datet
         
         print('in results *****************')
         
-        #print(response)
+        print(response)
         
         results = response.json()
         result_records = True
@@ -115,14 +115,14 @@ def process_entries(brand, user_id, password, base_path, unique_id, todays_datet
 
     entries_call = base_path + '/' + unique_id + '/race/entries'
             
-    #print(f"entries_call - {entries_call}")
+    print(f"entries_call - {entries_call}")
     
     try:
         response = requests.get(entries_call, auth=(user_id, password))
         
         print('in entries *****************')
         
-        #print(response)
+        print(response)
         #print('with entries')
         #print('response reason ' + response['reason'])
         
@@ -151,14 +151,14 @@ def process_entries(brand, user_id, password, base_path, unique_id, todays_datet
             
             existing_entry = entries_table.query(KeyConditionExpression=Key('Entry_Date').eq(entry_date) & Key('unique_id').eq(unique_id))
             
-            #print(existing_entry)
+            print(existing_entry)
             entry_datetime = datetime_from_string(entry_date, post_time)
 
             if (existing_entry['Count'] == 0) and  (entry_datetime > todays_datetime):
                 item = build_entry(entries, brand)
                 entries_table.put_item(Item=item)
                 
-                #print('entry added')
+                print('entry added')
         
     elif entry_records and type(entries) == dict:
         entry_date = entries['raceDate']
@@ -227,4 +227,4 @@ def process_workouts(brand, user_id, password, base_path, unique_id, todays_date
                 workouts_table.put_item(Item=item)            
         workout_records = False     
 
-#lambda_handler('', '')
+lambda_handler('', '')
